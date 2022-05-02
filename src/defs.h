@@ -1,0 +1,11 @@
+//
+// Created by dylan on 5/2/22.
+//
+
+#ifndef BATTLE_OF_PLEIADES_DEFS_H
+#define BATTLE_OF_PLEIADES_DEFS_H
+
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
+
+#endif //BATTLE_OF_PLEIADES_DEFS_H

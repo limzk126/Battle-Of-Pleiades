@@ -46,11 +46,14 @@ int main() {
 
     memset(&app, 0, sizeof(App));
     initSDL();
+    initStage();
     atexit(cleanup);
 
     while(1) {
         prepareScene();
         doInput();
+        app.delegate.logic();
+        app.delegate.draw();
         presentScene();
 
         capFrameRate(&then, &remainder);

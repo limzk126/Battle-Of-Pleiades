@@ -7,4 +7,6 @@
 
 #include "common.h"
 
+extern App app;
+
 #endif //BATTLE_OF_PLEIADES_INPUT_H

@@ -4,7 +4,7 @@
 
 #include "utils.h"
 
-void wrapCoordinates(Entity *player) {
+void wrapCoordinates(Entity *player, int scale_mult) {
 
     // Right boundary
     if (player->x > SCREEN_WIDTH) {
@@ -12,12 +12,12 @@ void wrapCoordinates(Entity *player) {
     }
 
     // Left boundary
-    if (player->x < -player->w) {
+    if (player->x < -player->w * scale_mult) {
         player->x = SCREEN_WIDTH;
     }
 
     // Top boundary
-    if (player->y < -player->h) {
+    if (player->y < -player->h * scale_mult) {
         player->y = SCREEN_HEIGHT;
     }
 

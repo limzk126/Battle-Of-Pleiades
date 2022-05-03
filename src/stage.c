@@ -86,7 +86,7 @@ void initStage(void) {
     app.delegate.draw = draw;
 
     memset(&stage, 0, sizeof(Stage));
-    initLL();
+    stage.asteroidTail = &stage.asteroidHead;
 
     playerTexture = loadTexture("gfx/fighter.png");
     asteroidsTexture = loadTexture("gfx/asteroids-arcade.png");
@@ -97,10 +97,13 @@ void initStage(void) {
 
 static void logic(void) {
     doPlayer();
+    spawnAsteroids();
+    doAsteroids();
 }
 
 static void draw(void) {
     drawPlayer();
+    drawAsteroids();
 }
 
 static void initPlayer(void) {
@@ -172,7 +175,6 @@ static void doPlayer(void) {
     player->x += player->dx;
     player->y += player->dy;
 
-    wrapCoordinates(player);
 }
 
 static void initLL(void) {
@@ -180,7 +182,61 @@ static void initLL(void) {
 }
 
 static void drawPlayer(void) {
+    wrapCoordinates(player, 1);
     blitRect(asteroidsTexture, texture_portion_rect[brown_spaceship],stage.player->x,
             stage.player->y, stage.player->angle, 2);
 }
 
+static void spawnAsteroids() {
+    if (stage.asteroidHead.next == NULL) {
+        for (int i = 0; i < 5; ++i) {
+            double r = 600 * sqrt(((double) rand()) / RAND_MAX);
+            double theta =  ((double) rand()) / RAND_MAX * 2 * M_PI;
+            int x = SCREEN_WIDTH / 2 + r + cos(theta);
+            int y = SCREEN_HEIGHT / 2 + r + sin(theta);
+
+            if (y / x * SCREEN_WIDTH <= SCREEN_HEIGHT) {
+                x = SCREEN_WIDTH;
+                y /= x * SCREEN_WIDTH;
+            } else {
+                y = SCREEN_HEIGHT;
+                x /= y * SCREEN_HEIGHT;
+            }
+
+            Entity *asteroid;
+            asteroid = malloc(sizeof(Entity));
+            memset(asteroid, 0, sizeof(Entity));
+
+            stage.asteroidTail->next = asteroid;
+            stage.asteroidTail = asteroid;
+
+            asteroid->x = x;
+            asteroid->y = y;
+            asteroid->angle = 360 * ((double) rand()) / RAND_MAX;
+            asteroid->dx = 5 * sin(asteroid->angle);
+            asteroid->dy = -5 * cos(asteroid->angle);
+            asteroid->texture = asteroidsTexture;
+            asteroid->rect = &texture_portion_rect[large_asteroid];
+            asteroid->w = asteroid->rect->w;
+            asteroid->h = asteroid->rect->h;
+        }
+    }
+}
+
+static void drawAsteroids(void) {
+    Entity *e;
+
+    for (e = stage.asteroidHead.next; e != NULL; e = e->next) {
+        wrapCoordinates(e, 2);
+        blitRect(e->texture, *(e->rect), e->x, e->y, e->angle, 2);
+    }
+}
+
+static void doAsteroids(void) {
+    Entity * e;
+
+    for (e = stage.asteroidHead.next; e != NULL; e = e->next) {
+        e->x += e->dx;
+        e->y += e->dy;
+    }
+}

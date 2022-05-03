@@ -17,7 +17,7 @@ typedef struct {
     int keyboard[MAX_KEYBOARD_KEYS];
 } App;
 
-typedef struct {
+typedef struct Entity {
    float x;
    float y;
    int w;
@@ -26,10 +26,13 @@ typedef struct {
    float dy;
    double angle;
    SDL_Texture *texture;
+   SDL_Rect *rect;
+   struct Entity *next;
 } Entity;
 
 typedef struct {
     Entity *player;
+    Entity asteroidHead, *asteroidTail;
 } Stage;
 
 #endif //BATTLE_OF_PLEIADES_STRUCTS_H

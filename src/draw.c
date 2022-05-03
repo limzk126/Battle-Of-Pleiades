@@ -32,12 +32,13 @@ SDL_Texture *loadTexture(char *filename) {
     return texture;
 }
 
-void blit(SDL_Texture *texture, int x, int y) {
+void blit(SDL_Texture *texture, int x, int y, double angle) {
     SDL_Rect dest;
     dest.x = x;
     dest.y = y;
 
     SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
 
-    SDL_RenderCopy(app.renderer, texture, NULL, &dest);
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    SDL_RenderCopyEx(app.renderer, texture, NULL, &dest, angle, NULL, flip);
 }

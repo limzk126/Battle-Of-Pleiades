@@ -24,7 +24,7 @@ typedef struct {
    int h;
    float dx;
    float dy;
-   float angle;
+   double angle;
    SDL_Texture *texture;
 } Entity;
 

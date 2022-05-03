@@ -42,3 +42,14 @@ void blit(SDL_Texture *texture, int x, int y, double angle) {
     SDL_RendererFlip flip = SDL_FLIP_NONE;
     SDL_RenderCopyEx(app.renderer, texture, NULL, &dest, angle, NULL, flip);
 }
+
+void blitRect(SDL_Texture *texture, SDL_Rect src, int x, int y, double angle, int scale_mult) {
+    SDL_Rect dest;
+    dest.x = x;
+    dest.y = y;
+    dest.w = src.w * scale_mult;
+    dest.h = src.h * scale_mult;
+
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    SDL_RenderCopyEx(app.renderer, texture, &src, &dest, angle, NULL, flip);
+}

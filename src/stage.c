@@ -5,7 +5,81 @@
 #include "stage.h"
 
 static Entity *player;
+
 static SDL_Texture *playerTexture;
+static SDL_Texture *asteroidsTexture;
+static SDL_Rect texture_portion_rect[64];
+
+enum texturePortion {
+    brown_spaceship,
+    strong_thrust_one,
+    weak_thrust_one,
+    strong_thrust_two,
+    weak_thrust_two,
+    large_asteroid,
+    medium_asteroid_tl,
+    medium_asteroid_tr,
+    medium_asteroid_bl,
+    medium_asteroid_br,
+};
+
+void initRects() {
+    int textureW;
+    int textureH;
+
+    SDL_QueryTexture(asteroidsTexture, NULL, NULL, &textureW, &textureH);
+
+    texture_portion_rect[brown_spaceship].x = 0;
+    texture_portion_rect[brown_spaceship].y = 0;
+    texture_portion_rect[brown_spaceship].w = textureW / 8;
+    texture_portion_rect[brown_spaceship].h = textureH / 8;
+
+    texture_portion_rect[strong_thrust_one].x = textureW / 4;
+    texture_portion_rect[strong_thrust_one].y = 0;
+    texture_portion_rect[strong_thrust_one].w = textureW / 8;
+    texture_portion_rect[strong_thrust_one].h = textureH / 8;
+
+    texture_portion_rect[weak_thrust_one].x = textureW * 3 / 8;
+    texture_portion_rect[weak_thrust_one].y = 0;
+    texture_portion_rect[weak_thrust_one].w = textureW / 8;
+    texture_portion_rect[weak_thrust_one].h = textureH / 8;
+
+    texture_portion_rect[strong_thrust_two].x = textureW / 2;
+    texture_portion_rect[strong_thrust_two].y = 0;
+    texture_portion_rect[strong_thrust_two].w = textureW / 8;
+    texture_portion_rect[strong_thrust_two].h = textureH / 8;
+
+    texture_portion_rect[weak_thrust_two].x = textureW * 5 / 8;
+    texture_portion_rect[weak_thrust_two].y = 0;
+    texture_portion_rect[weak_thrust_two].w = textureW / 8;
+    texture_portion_rect[weak_thrust_two].h = textureH / 8;
+
+    texture_portion_rect[large_asteroid].x = textureW / 4;
+    texture_portion_rect[large_asteroid].y = textureH * 3 / 4;
+    texture_portion_rect[large_asteroid].w = textureW / 4;
+    texture_portion_rect[large_asteroid].h = textureH / 4;
+
+    texture_portion_rect[medium_asteroid_tl].x = textureW / 2;
+    texture_portion_rect[medium_asteroid_tl].y = textureH * 3 / 4;
+    texture_portion_rect[medium_asteroid_tl].w = textureW / 8;
+    texture_portion_rect[medium_asteroid_tl].h = textureH / 8;
+
+    texture_portion_rect[medium_asteroid_tr].x = textureW * 5 / 8;
+    texture_portion_rect[medium_asteroid_tr].y = textureH * 3 / 4;
+    texture_portion_rect[medium_asteroid_tr].w = textureW / 8;
+    texture_portion_rect[medium_asteroid_tr].h = textureH / 8;
+
+    texture_portion_rect[medium_asteroid_bl].x = textureW / 2;
+    texture_portion_rect[medium_asteroid_bl].y = textureH * 7 / 8;
+    texture_portion_rect[medium_asteroid_bl].w = textureW / 8;
+    texture_portion_rect[medium_asteroid_bl].h = textureH / 8;
+
+    texture_portion_rect[medium_asteroid_br].x = textureW * 5 / 8;
+    texture_portion_rect[medium_asteroid_br].y = textureH * 7 / 8;
+    texture_portion_rect[medium_asteroid_br].w = textureW / 8;
+    texture_portion_rect[medium_asteroid_br].h = textureH / 8;
+
+}
 
 void initStage(void) {
     app.delegate.logic = logic;
@@ -15,7 +89,9 @@ void initStage(void) {
     initLL();
 
     playerTexture = loadTexture("gfx/fighter.png");
+    asteroidsTexture = loadTexture("gfx/asteroids-arcade.png");
 
+    initRects();
     initPlayer();
 }
 
@@ -104,6 +180,7 @@ static void initLL(void) {
 }
 
 static void drawPlayer(void) {
-    blit(stage.player->texture, stage.player->x, stage.player->y, stage.player->angle);
+    blitRect(asteroidsTexture, texture_portion_rect[brown_spaceship],stage.player->x,
+            stage.player->y, stage.player->angle, 2);
 }
 

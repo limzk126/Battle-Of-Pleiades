@@ -3,6 +3,7 @@
 //
 
 #include "stage.h"
+#include <time.h>
 
 static Entity *player;
 
@@ -21,6 +22,7 @@ enum texturePortion {
     medium_asteroid_tr,
     medium_asteroid_bl,
     medium_asteroid_br,
+    player_bullet,
 };
 
 void initRects() {
@@ -79,6 +81,10 @@ void initRects() {
     texture_portion_rect[medium_asteroid_br].w = textureW / 8;
     texture_portion_rect[medium_asteroid_br].h = textureH / 8;
 
+    texture_portion_rect[player_bullet].x = 0;
+    texture_portion_rect[player_bullet].y = textureH / 2;
+    texture_portion_rect[player_bullet].w = textureW / 4;
+    texture_portion_rect[player_bullet].h = textureH / 4;
 }
 
 void initStage(void) {
@@ -87,23 +93,28 @@ void initStage(void) {
 
     memset(&stage, 0, sizeof(Stage));
     stage.asteroidTail = &stage.asteroidHead;
+    stage.bulletTail = &stage.bulletHead;
 
     playerTexture = loadTexture("gfx/fighter.png");
     asteroidsTexture = loadTexture("gfx/asteroids-arcade.png");
 
     initRects();
     initPlayer();
+
+    srand(time(NULL));
 }
 
 static void logic(void) {
     doPlayer();
     spawnAsteroids();
     doAsteroids();
+    doBullets();
 }
 
 static void draw(void) {
     drawPlayer();
     drawAsteroids();
+    drawBullets();
 }
 
 static void initPlayer(void) {
@@ -156,9 +167,14 @@ static void doPlayer(void) {
             player->angle -= 360;
         }
     }
+    if (app.keyboard[SDL_SCANCODE_LCTRL]) {
+        if (app.keyboard[SDL_SCANCODE_LCTRL]++ == 1) {
+            fireBullet();
+        }
+    }
 
     if (app.keyboard[SDL_SCANCODE_UP]) {
-        printf("%f  %f\n",player->dx, player->dy);
+//        printf("%f  %f\n",player->dx, player->dy);
         player->dx += sin(player->angle * UNIT_DEGREE_IN_RADIANS) * DURATION_PER_FRAME * ACCELERATION_MULT;
         player->dy -= cos(player->angle * UNIT_DEGREE_IN_RADIANS) * DURATION_PER_FRAME * ACCELERATION_MULT;
     }
@@ -190,19 +206,21 @@ static void drawPlayer(void) {
 static void spawnAsteroids() {
     if (stage.asteroidHead.next == NULL) {
         for (int i = 0; i < 5; ++i) {
-            double r = 600 * sqrt(((double) rand()) / RAND_MAX);
+            double r = 400 * sqrt(((double) rand()) / RAND_MAX);
             double theta =  ((double) rand()) / RAND_MAX * 2 * M_PI;
-            int x = SCREEN_WIDTH / 2 + r + cos(theta);
-            int y = SCREEN_HEIGHT / 2 + r + sin(theta);
-
+            double x = SCREEN_WIDTH / 2 + r + cos(theta);
+            double y = SCREEN_HEIGHT / 2 + r + sin(theta);
+            printf("BEFORE x = %f, y = %f\n", x, y);
             if (y / x * SCREEN_WIDTH <= SCREEN_HEIGHT) {
                 x = SCREEN_WIDTH;
-                y /= x * SCREEN_WIDTH;
+                y = y / x * SCREEN_WIDTH;
             } else {
                 y = SCREEN_HEIGHT;
-                x /= y * SCREEN_HEIGHT;
+                x = x / y * SCREEN_HEIGHT;
             }
-
+            x = SCREEN_WIDTH / 2 + sin(theta) * 900;
+            y = SCREEN_WIDTH / 2 - cos(theta) * 900;
+            printf("x = %f, y = %f\n", x, y);
             Entity *asteroid;
             asteroid = malloc(sizeof(Entity));
             memset(asteroid, 0, sizeof(Entity));
@@ -213,8 +231,8 @@ static void spawnAsteroids() {
             asteroid->x = x;
             asteroid->y = y;
             asteroid->angle = 360 * ((double) rand()) / RAND_MAX;
-            asteroid->dx = 5 * sin(asteroid->angle);
-            asteroid->dy = -5 * cos(asteroid->angle);
+            asteroid->dx = 5 * sin(asteroid->angle * UNIT_DEGREE_IN_RADIANS);
+            asteroid->dy = -5 * cos(asteroid->angle * UNIT_DEGREE_IN_RADIANS);
             asteroid->texture = asteroidsTexture;
             asteroid->rect = &texture_portion_rect[large_asteroid];
             asteroid->w = asteroid->rect->w;
@@ -236,6 +254,41 @@ static void doAsteroids(void) {
     Entity * e;
 
     for (e = stage.asteroidHead.next; e != NULL; e = e->next) {
+        e->x += e->dx;
+        e->y += e->dy;
+    }
+}
+
+static void fireBullet(void) {
+    Entity *bullet;
+    bullet = malloc(sizeof(Entity));
+    memset(bullet, 0, sizeof(Entity));
+    stage.bulletTail->next = bullet;
+    stage.bulletTail = bullet;
+
+    bullet->x = player->x;
+    bullet->y = player->y;
+    bullet->angle = player->angle;
+    bullet->dx = 5 * sin(player->angle * UNIT_DEGREE_IN_RADIANS);
+    bullet->dy = 5 * -cos(player->angle * UNIT_DEGREE_IN_RADIANS);
+    bullet->texture = asteroidsTexture;
+    bullet->rect = &texture_portion_rect[player_bullet];
+    bullet->w = bullet->rect->w;
+    bullet->h = bullet->rect->h;
+}
+
+static void drawBullets(void) {
+    Entity *b;
+
+    for (b = stage.bulletHead.next; b != NULL; b = b->next) {
+        blitRect(b->texture, *(b->rect), b->x, b->y, b->angle, 1);
+    }
+}
+
+static void doBullets(void) {
+    Entity * e;
+
+    for (e = stage.bulletHead.next; e != NULL; e = e->next) {
         e->x += e->dx;
         e->y += e->dy;
     }

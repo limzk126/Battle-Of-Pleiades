@@ -33,6 +33,7 @@ typedef struct Entity {
 typedef struct {
     Entity *player;
     Entity asteroidHead, *asteroidTail;
+    Entity bulletHead, *bulletTail;
 } Stage;
 
 #endif //BATTLE_OF_PLEIADES_STRUCTS_H

@@ -18,6 +18,9 @@ static void throttleSpeed(float* dx, float *dy);
 static void spawnAsteroids(void);
 static void drawAsteroids(void);
 static void doAsteroids(void);
+static void doBullets(void);
+static void drawBullets(void);
+static void fireBullet(void);
 
 extern App app;
 extern Stage stage;

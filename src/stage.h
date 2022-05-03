@@ -13,7 +13,6 @@ static void doPlayer(void);
 static void initLL(void);
 static void initPlayer(void);
 static void drawPlayer(void);
-static void wrap(float *x, float *y);
 static int isOverSpeedLimit(void);
 static void throttleSpeed(float* dx, float *dy);
 
@@ -22,6 +21,7 @@ extern Stage stage;
 
 extern SDL_Texture *loadTexture(char *filename);
 extern void blit(SDL_Texture *texture, int x, int y, double angle);
+extern void wrapCoordinates(Entity *player);
 
 #endif //BATTLE_OF_PLEIADES_STAGE_H
 

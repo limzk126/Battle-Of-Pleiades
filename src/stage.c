@@ -96,7 +96,7 @@ static void doPlayer(void) {
     player->x += player->dx;
     player->y += player->dy;
 
-
+    wrapCoordinates(player);
 }
 
 static void initLL(void) {

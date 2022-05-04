@@ -123,10 +123,11 @@ static void initPlayer(void) {
     stage.player = player;
     player->x = SCREEN_WIDTH / 2;
     player->y = SCREEN_HEIGHT / 2;
-    player->texture = playerTexture;
+    player->texture = asteroidsTexture;
     player->angle = 0;
-
-    SDL_QueryTexture(player->texture, NULL, NULL, &player->w, &player->h);
+    player->rect = &texture_portion_rect[brown_spaceship];
+    player->w = player->rect->w * 2;
+    player->h = player->rect->h * 2;
 }
 
 static int isOverSpeedLimit(void) {
@@ -198,9 +199,9 @@ static void initLL(void) {
 }
 
 static void drawPlayer(void) {
-    wrapCoordinates(player, 1);
-    blitRect(asteroidsTexture, texture_portion_rect[brown_spaceship],stage.player->x,
-            stage.player->y, stage.player->angle, 2);
+    wrapCoordinates(stage.player);
+    blitRect(stage.player->texture, *stage.player->rect,stage.player->x,
+            stage.player->y, stage.player->w,stage.player->h, stage.player->angle);
 }
 
 static void spawnAsteroids() {
@@ -235,8 +236,8 @@ static void spawnAsteroids() {
             asteroid->dy = -5 * cos(asteroid->angle * UNIT_DEGREE_IN_RADIANS);
             asteroid->texture = asteroidsTexture;
             asteroid->rect = &texture_portion_rect[large_asteroid];
-            asteroid->w = asteroid->rect->w;
-            asteroid->h = asteroid->rect->h;
+            asteroid->w = asteroid->rect->w * 2;
+            asteroid->h = asteroid->rect->h * 2;
         }
     }
 }
@@ -245,8 +246,8 @@ static void drawAsteroids(void) {
     Entity *e;
 
     for (e = stage.asteroidHead.next; e != NULL; e = e->next) {
-        wrapCoordinates(e, 2);
-        blitRect(e->texture, *(e->rect), e->x, e->y, e->angle, 2);
+        wrapCoordinates(e);
+        blitRect(e->texture, *(e->rect), e->x, e->y, e->w, e->h, e->angle);
     }
 }
 
@@ -266,8 +267,12 @@ static void fireBullet(void) {
     stage.bulletTail->next = bullet;
     stage.bulletTail = bullet;
 
-    bullet->x = player->x;
-    bullet->y = player->y;
+    double rad = player->angle * UNIT_DEGREE_IN_RADIANS;
+    printf("%d %d\n", player->rect->x, player->rect->y);
+    float px = player->x, py = player->y;
+    float bx = player->x + texture_portion_rect[player_bullet].w / 2, by = player->y + texture_portion_rect[player_bullet].h / 2;
+    bullet->x = px + (bx - px) * cos(rad) - (by - py) * sin(rad);
+    bullet->y = py + (bx - px) * sin(rad) + (by - py) * cos(rad);
     bullet->angle = player->angle;
     bullet->dx = 5 * sin(player->angle * UNIT_DEGREE_IN_RADIANS);
     bullet->dy = 5 * -cos(player->angle * UNIT_DEGREE_IN_RADIANS);
@@ -281,7 +286,7 @@ static void drawBullets(void) {
     Entity *b;
 
     for (b = stage.bulletHead.next; b != NULL; b = b->next) {
-        blitRect(b->texture, *(b->rect), b->x, b->y, b->angle, 1);
+        blitRect(b->texture, *(b->rect), b->x, b->y, b->w, b->h, b->angle);
     }
 }
 

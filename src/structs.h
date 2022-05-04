@@ -22,6 +22,7 @@ typedef struct Entity {
    float y;
    int w;
    int h;
+   int scale_mult;
    float dx;
    float dy;
    double angle;

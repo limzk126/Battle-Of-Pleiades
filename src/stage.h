@@ -27,8 +27,8 @@ extern Stage stage;
 
 extern SDL_Texture *loadTexture(char *filename);
 extern void blit(SDL_Texture *texture, int x, int y, double angle);
-extern void wrapCoordinates(Entity *player, int scale_mult);
-extern void blitRect(SDL_Texture *texture, SDL_Rect src, int x, int y, double angle, int scale_mult);
+extern void wrapCoordinates(Entity *entity);
+extern void blitRect(SDL_Texture *texture, SDL_Rect src, int x, int y, int w, int h, double angle);
 
 #endif //BATTLE_OF_PLEIADES_STAGE_H
 

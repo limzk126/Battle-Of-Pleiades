@@ -37,4 +37,9 @@ typedef struct {
     Entity bulletHead, *bulletTail;
 } Stage;
 
+typedef struct {
+    int x;
+    int y;
+} pvector;
+
 #endif //BATTLE_OF_PLEIADES_STRUCTS_H

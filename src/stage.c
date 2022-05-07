@@ -111,6 +111,7 @@ static void logic(void) {
     spawnAsteroids();
     doAsteroids();
     doBullets();
+    do_player_collision();
 }
 
 static void draw(void) {
@@ -237,8 +238,8 @@ static void spawnAsteroids() {
             asteroid->x = x;
             asteroid->y = y;
             asteroid->angle = 360 * ((double) rand()) / RAND_MAX;
-            asteroid->dx = 5 * sin(asteroid->angle * UNIT_DEGREE_IN_RADIANS);
-            asteroid->dy = -5 * cos(asteroid->angle * UNIT_DEGREE_IN_RADIANS);
+            asteroid->dx = 2 * sin(asteroid->angle * UNIT_DEGREE_IN_RADIANS);
+            asteroid->dy = -2 * cos(asteroid->angle * UNIT_DEGREE_IN_RADIANS);
             asteroid->texture = asteroidsTexture;
             asteroid->rect = &texture_portion_rect[large_asteroid];
             asteroid->w = asteroid->rect->w * 2;
@@ -316,3 +317,75 @@ static void doBullets(void) {
         e->y += e->dy;
     }
 }
+int get_new_x_after_rotation(int current_x,int w, int h, float rotation_angle) {
+    return current_x + w * cos(rotation_angle) - h * sin(rotation_angle);
+}
+
+int get_new_y_after_rotation(int current_y, int w, int h, float rotation_angle) {
+    return current_y + w / 2 * sin(rotation_angle) + h / 2 * cos(rotation_angle);
+}
+
+pvector get_new_vertex_after_rotation(int current_x, int current_y, int w, int h, float rotation_angle) {
+    pvector new_vertex = {
+        .x = current_x + w * cos(rotation_angle) - h * sin(rotation_angle),
+        .y = current_y + w * sin(rotation_angle) + h * cos(rotation_angle)
+    };
+
+    return new_vertex;
+}
+void generate_vertices(pvector *arr, Entity e, int is_player) {
+    if (is_player) {
+        const pvector top_middle = get_new_vertex_after_rotation(e.x, e.y, 0, -(e.h / 2), e.angle * UNIT_DEGREE_IN_RADIANS);
+        const pvector bottom_left = get_new_vertex_after_rotation(e.x, e.y, -(e.w / 2), (e.h / 2), e.angle * UNIT_DEGREE_IN_RADIANS);
+        const pvector bottom_right = get_new_vertex_after_rotation(e.x, e.y, e.w / 2, (e.h / 2), e.angle * UNIT_DEGREE_IN_RADIANS);
+
+        arr[0] = top_middle;
+        arr[1] = bottom_right;
+        arr[2] = bottom_left;
+
+        return;
+    }
+
+    const pvector top_left = get_new_vertex_after_rotation(e.x, e.y, -(e.w / 2), -(e.h / 2), e.angle);
+    const pvector top_right = get_new_vertex_after_rotation(e.x, e.y, (e.w / 2), -(e.h / 2), e.angle);
+    const pvector bottom_left = get_new_vertex_after_rotation(e.x, e.y, -(e.w / 2), (e.h / 2), e.angle);
+    const pvector bottom_right = get_new_vertex_after_rotation(e.x, e.y, (e.w / 2), (e.h / 2), e.angle);
+
+    arr[0] = top_left;
+    arr[1] = top_right;
+    arr[2] = bottom_right;
+    arr[3] = bottom_left;
+}
+
+static void do_player_collision() {
+    Entity *a;
+
+    pvector player_vertices[3];
+    pvector * p = player_vertices;
+    generate_vertices(p, *stage.player, 1);
+    printf("%d %d %f\n", player_vertices[0].x, player_vertices[0].y, player->angle);
+    int next = 0;
+    for (int i = 0; i < 3; ++i) {
+        next = i + 1;
+        if (i == 2) next = 0;
+        SDL_SetRenderDrawColor(app.renderer, 255, 0, 0, 255);
+        SDL_RenderDrawLine(app.renderer, player_vertices[i].x, player_vertices[i].y, player_vertices[next].x, player_vertices[next].y);
+    }
+    for (a = stage.asteroidHead.next; a != NULL; a = a->next) {
+        pvector asteroid_vertices[4];
+        pvector * as = asteroid_vertices;
+        generate_vertices(as, *a, 0);
+        for (int i = 0; i < 4; ++i) {
+            next = i + 1;
+            if (i == 3) next = 0;
+            SDL_SetRenderDrawColor(app.renderer, 0, 255, 0, 255);
+            SDL_RenderDrawLine(app.renderer, asteroid_vertices[i].x, asteroid_vertices[i].y, asteroid_vertices[next].x, asteroid_vertices[next].y);
+        }
+        if (is_poly_to_poly_collision(p, as, 3, 4)) {
+            player->x = SCREEN_WIDTH / 2;
+            player->y = SCREEN_HEIGHT / 2;
+            return;
+        }
+    }
+}
+

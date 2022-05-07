@@ -1,0 +1,55 @@
+[33mcommit 5abe02d2f53676812fef386a660e690da0ac1223[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Author: puzzlehead <dylanlim12698@gmail.com>
+Date:   Thu May 5 00:12:42 2022 +0800
+
+    Fix shooting bug where bullet origin is not in the center of player.
+    
+    Absolutely need some refactoring :'(
+
+[33mcommit e7ed58fb011dedc017c438883727867568bf7859[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: puzzlehead <dylanlim12698@gmail.com>
+Date:   Wed May 4 00:02:15 2022 +0800
+
+    Implement player shooting
+
+[33mcommit 6475e0447eb445721f270df66f187c6b2dffc312[m
+Author: puzzlehead <dylanlim12698@gmail.com>
+Date:   Tue May 3 22:56:42 2022 +0800
+
+    Implement asteroid spawning
+
+[33mcommit 2573edd9dc3246d3c880ba0506ad87d484cad503[m
+Author: puzzlehead <dylanlim12698@gmail.com>
+Date:   Tue May 3 18:26:13 2022 +0800
+
+    Add new texture pack and configure their rects
+
+[33mcommit 9eb5121f17c3e041dbe0f9528717f7a933d66feb[m
+Author: puzzlehead <dylanlim12698@gmail.com>
+Date:   Tue May 3 13:23:43 2022 +0800
+
+    Implement boundary wrapping
+
+[33mcommit 41c7346d32388088f693be5a0389f971a1cf3b38[m
+Author: puzzlehead <dylanlim12698@gmail.com>
+Date:   Tue May 3 13:17:23 2022 +0800
+
+    Implement space like player ship movement
+
+[33mcommit 93df8c153ff72c4cbb8fdf61b8720fb852fcc452[m
+Author: puzzlehead <dylanlim12698@gmail.com>
+Date:   Mon May 2 21:13:05 2022 +0800
+
+    Display player spaceship on screen
+
+[33mcommit b059d7e3c815789d9bd557de741fa94d61b7d25c[m
+Author: puzzlehead <dylanlim12698@gmail.com>
+Date:   Mon May 2 17:17:43 2022 +0800
+
+    Create empty Window
+
+[33mcommit 37e980d14495fe4b2b4d923540e25b2ba78af738[m
+Author: Dylan <88614036+limzk126@users.noreply.github.com>
+Date:   Mon May 2 16:27:43 2022 +0800
+
+    Initial commit

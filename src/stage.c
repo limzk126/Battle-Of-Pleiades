@@ -9,6 +9,7 @@ static Entity *player;
 
 static SDL_Texture *playerTexture;
 static SDL_Texture *asteroidsTexture;
+static SDL_Texture *bulletTexture;
 static SDL_Rect texture_portion_rect[64];
 
 enum texturePortion {
@@ -95,8 +96,9 @@ void initStage(void) {
     stage.asteroidTail = &stage.asteroidHead;
     stage.bulletTail = &stage.bulletHead;
 
-    playerTexture = loadTexture("gfx/fighter.png");
+    playerTexture = loadTexture("gfx/Pixel_Spaceships/Sprites/blue_03.png");
     asteroidsTexture = loadTexture("gfx/asteroids-arcade.png");
+    bulletTexture = loadTexture("gfx/Pixel_Spaceships/Sprites/Projectiles/projectile02-1-cropped.png");
 
     initRects();
     initPlayer();
@@ -123,11 +125,14 @@ static void initPlayer(void) {
     stage.player = player;
     player->x = SCREEN_WIDTH / 2;
     player->y = SCREEN_HEIGHT / 2;
-    player->texture = asteroidsTexture;
-    player->angle = 0;
-    player->rect = &texture_portion_rect[brown_spaceship];
-    player->w = player->rect->w * 2;
-    player->h = player->rect->h * 2;
+    player->texture = playerTexture;
+    SDL_Rect *rect = malloc(sizeof(SDL_Rect));
+    rect->x = 0;
+    rect->y = 0;
+    SDL_QueryTexture(playerTexture, NULL, NULL, &rect->w, &rect->h);
+    player->rect = rect;
+    player->w = player->rect->w * 8 / 6;
+    player->h = player->rect->h * 8 / 6;
 }
 
 static int isOverSpeedLimit(void) {
@@ -268,16 +273,29 @@ static void fireBullet(void) {
     stage.bulletTail = bullet;
 
     double rad = player->angle * UNIT_DEGREE_IN_RADIANS;
-    printf("%d %d\n", player->rect->x, player->rect->y);
-    float px = player->x, py = player->y;
-    float bx = player->x + texture_portion_rect[player_bullet].w / 2, by = player->y + texture_portion_rect[player_bullet].h / 2;
-    bullet->x = px + (bx - px) * cos(rad) - (by - py) * sin(rad);
-    bullet->y = py + (bx - px) * sin(rad) + (by - py) * cos(rad);
+//    printf("%d %d\n", player->rect->x, player->rect->y);
+//    float px = player->x, py = player->y;
+//    float bx = player->x + texture_portion_rect[player_bullet].w / 2, by = player->y + texture_portion_rect[player_bullet].h / 2;
+//    bullet->x = px + (bx - px) * cos(rad) - (by - py) * sin(rad);
+//    bullet->y = py + (bx - px) * sin(rad) + (by - py) * cos(rad);
+//    bullet->angle = player->angle;
+//    bullet->dx = 5 * sin(player->angle * UNIT_DEGREE_IN_RADIANS);
+//    bullet->dy = 5 * -cos(player->angle * UNIT_DEGREE_IN_RADIANS);
+//    bullet->texture = asteroidsTexture;
+//    bullet->rect = &texture_portion_rect[player_bullet];
+//    bullet->w = bullet->rect->w;
+//    bullet->h = bullet->rect->h;
+    bullet->x = player->x;
+    bullet->y = player->y;
     bullet->angle = player->angle;
-    bullet->dx = 5 * sin(player->angle * UNIT_DEGREE_IN_RADIANS);
-    bullet->dy = 5 * -cos(player->angle * UNIT_DEGREE_IN_RADIANS);
-    bullet->texture = asteroidsTexture;
-    bullet->rect = &texture_portion_rect[player_bullet];
+    bullet->dx = 10 * sin(rad);
+    bullet->dy = 10 * - cos(rad);
+    bullet->texture = bulletTexture;
+    SDL_Rect *rect = malloc(sizeof(SDL_Rect));
+    rect->x = 0;
+    rect->y = 0;
+    SDL_QueryTexture(bulletTexture, NULL, NULL, &rect->w, &rect->h);
+    bullet->rect = rect;
     bullet->w = bullet->rect->w;
     bullet->h = bullet->rect->h;
 }

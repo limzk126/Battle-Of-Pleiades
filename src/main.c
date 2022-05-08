@@ -46,6 +46,7 @@ int main() {
 
     memset(&app, 0, sizeof(App));
     initSDL();
+    init_sounds();
     initStage();
     atexit(cleanup);
 

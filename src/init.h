@@ -6,6 +6,7 @@
 #define BATTLE_OF_PLEIADES_INIT_H
 
 #include "common.h"
+#include "SDL2/SDL_mixer.h"
 
 extern App app;
 

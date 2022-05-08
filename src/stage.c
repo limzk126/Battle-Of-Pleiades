@@ -10,6 +10,7 @@ static Entity *player;
 static SDL_Texture *playerTexture;
 static SDL_Texture *asteroidsTexture;
 static SDL_Texture *bulletTexture;
+static SDL_Texture *backgroundTexture;
 static SDL_Rect texture_portion_rect[64];
 
 enum texturePortion {
@@ -99,9 +100,13 @@ void initStage(void) {
     playerTexture = loadTexture("gfx/Pixel_Spaceships/Sprites/blue_03.png");
     asteroidsTexture = loadTexture("gfx/asteroids-arcade.png");
     bulletTexture = loadTexture("gfx/Pixel_Spaceships/Sprites/Projectiles/projectile02-1-cropped.png");
+    backgroundTexture = loadTexture("gfx/background.jpg");
 
     initRects();
     initPlayer();
+
+    load_music("music/Mercury.ogg");
+    play_music(1);
 
     srand(time(NULL));
 }
@@ -116,6 +121,7 @@ static void logic(void) {
 }
 
 static void draw(void) {
+    drawBackground();
     drawPlayer();
     drawAsteroids();
     drawBullets();
@@ -179,6 +185,7 @@ static void doPlayer(void) {
     if (app.keyboard[SDL_SCANCODE_LCTRL]) {
         if (app.keyboard[SDL_SCANCODE_LCTRL]++ == 1) {
             fireBullet();
+            play_sound(SND_PLAYER_FIRE, CH_PLAYER);
         }
     }
 
@@ -202,8 +209,12 @@ static void doPlayer(void) {
 
 }
 
-static void initLL(void) {
-
+static void drawBackground() {
+    SDL_Rect *rect = malloc(sizeof(SDL_Rect));
+    rect->x = 0;
+    rect->y = 0;
+    SDL_QueryTexture(backgroundTexture, NULL, NULL, &rect->w, &rect->h);
+    blitRect(backgroundTexture, *rect, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, rect->w, rect->h, 0);
 }
 
 static void drawPlayer(void) {
@@ -444,6 +455,7 @@ static void do_player_collision() {
         if (is_poly_to_poly_collision(p, as, 3, 4)) {
             player->x = SCREEN_WIDTH / 2;
             player->y = SCREEN_HEIGHT / 2;
+            play_sound(SND_PLAYER_DIE, CH_PLAYER);
             return;
         }
     }

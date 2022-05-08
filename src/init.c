@@ -31,6 +31,14 @@ void initSDL(void) {
     }
 
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
+//    putenv("SDL_AUDIODRIVER=alsa");
+//    putenv("XDG_RUNTIME_DIR=""");
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024)) {
+        printf("Failed to initialize SDL Mixer: %s\n", SDL_GetError());
+        exit(1);
+    }
+
+    Mix_AllocateChannels(MAX_SND_CHANNELS);
 }
 
 void cleanup(void)

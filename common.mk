@@ -11,6 +11,7 @@ _OBJS += init.o input.o
 _OBJS += main.o
 _OBJS += stage.o
 _OBJS += utils.o
+_OBJS += sound.o
 
 OBJS = $(patsubst %,$(OUT)/%,$(_OBJS))
 

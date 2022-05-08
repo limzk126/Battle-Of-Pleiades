@@ -13,6 +13,7 @@ extern void prepareScene(void);
 extern void presentScene(void);
 extern void doInput(void);
 extern void initStage(void);
+extern void init_sounds(void);
 
 App app;
 Stage stage;

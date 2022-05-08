@@ -24,6 +24,7 @@ static void fireBullet(void);
 static void do_player_collision();
 static void do_bullet_collision();
 static void split_asteroid(Entity *parent);
+static void drawBackground();
 
 extern App app;
 extern Stage stage;
@@ -33,6 +34,9 @@ extern void blit(SDL_Texture *texture, int x, int y, double angle);
 extern void wrapCoordinates(Entity *entity);
 extern void blitRect(SDL_Texture *texture, SDL_Rect src, int x, int y, int w, int h, double angle);
 extern int is_poly_to_poly_collision(pvector *p1, pvector *p2, int p1_length, int p2_length);
+extern void load_music(char *filename);
+extern void play_music(int loop);
+extern void play_sound(int id, int channel);
 
 #endif //BATTLE_OF_PLEIADES_STAGE_H
 

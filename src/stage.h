@@ -22,6 +22,7 @@ static void doBullets(void);
 static void drawBullets(void);
 static void fireBullet(void);
 static void do_player_collision();
+static void do_bullet_collision();
 
 extern App app;
 extern Stage stage;

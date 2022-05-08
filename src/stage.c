@@ -112,6 +112,7 @@ static void logic(void) {
     doAsteroids();
     doBullets();
     do_player_collision();
+    do_bullet_collision();
 }
 
 static void draw(void) {
@@ -132,8 +133,9 @@ static void initPlayer(void) {
     rect->y = 0;
     SDL_QueryTexture(playerTexture, NULL, NULL, &rect->w, &rect->h);
     player->rect = rect;
-    player->w = player->rect->w * 8 / 6;
-    player->h = player->rect->h * 8 / 6;
+    player->w = player->rect->w * 7 / 6;
+    player->h = player->rect->h * 7 / 6;
+    player->health = 1;
 }
 
 static int isOverSpeedLimit(void) {
@@ -244,6 +246,7 @@ static void spawnAsteroids() {
             asteroid->rect = &texture_portion_rect[large_asteroid];
             asteroid->w = asteroid->rect->w * 2;
             asteroid->h = asteroid->rect->h * 2;
+            asteroid->health = 1;
         }
     }
 }
@@ -258,9 +261,23 @@ static void drawAsteroids(void) {
 }
 
 static void doAsteroids(void) {
-    Entity * e;
+    Entity *e;
 
+    Entity *prev = &stage.asteroidHead;
     for (e = stage.asteroidHead.next; e != NULL; e = e->next) {
+        if (e->health == 0) {
+            prev->next = e->next;
+
+            if (e == stage.asteroidTail) {
+                stage.asteroidTail = prev;
+            }
+
+            free(e);
+            e = prev;
+        }
+
+        prev = e;
+
         e->x += e->dx;
         e->y += e->dy;
     }
@@ -289,8 +306,8 @@ static void fireBullet(void) {
     bullet->x = player->x;
     bullet->y = player->y;
     bullet->angle = player->angle;
-    bullet->dx = 10 * sin(rad);
-    bullet->dy = 10 * - cos(rad);
+    bullet->dx = 14 * sin(rad);
+    bullet->dy = 14 * - cos(rad);
     bullet->texture = bulletTexture;
     SDL_Rect *rect = malloc(sizeof(SDL_Rect));
     rect->x = 0;
@@ -299,6 +316,7 @@ static void fireBullet(void) {
     bullet->rect = rect;
     bullet->w = bullet->rect->w;
     bullet->h = bullet->rect->h;
+    bullet->health = 1;
 }
 
 static void drawBullets(void) {
@@ -312,11 +330,26 @@ static void drawBullets(void) {
 static void doBullets(void) {
     Entity * e;
 
+    Entity *prev = &stage.bulletHead;
     for (e = stage.bulletHead.next; e != NULL; e = e->next) {
+        if (e->health == 0) {
+            prev->next = e->next;
+
+            if (e == stage.bulletTail) {
+                stage.bulletTail = prev;
+            }
+
+            free(e);
+            e = prev;
+        }
+
+        prev = e;
+
         e->x += e->dx;
         e->y += e->dy;
     }
 }
+
 int get_new_x_after_rotation(int current_x,int w, int h, float rotation_angle) {
     return current_x + w * cos(rotation_angle) - h * sin(rotation_angle);
 }
@@ -385,6 +418,27 @@ static void do_player_collision() {
             player->x = SCREEN_WIDTH / 2;
             player->y = SCREEN_HEIGHT / 2;
             return;
+        }
+    }
+}
+
+static void do_bullet_collision() {
+    Entity *b;
+    pvector bullet_vertices[4];
+    pvector *p = bullet_vertices;
+    for (b = stage.bulletHead.next; b != NULL; b = b->next) {
+        generate_vertices(p, *b, 0);
+
+        Entity *a;
+        pvector asteroid_vertices[4];
+        pvector *as = asteroid_vertices;
+        for (a = stage.asteroidHead.next; a != NULL; a = a->next) {
+            generate_vertices(as, *a, 0);
+            if (is_poly_to_poly_collision(p, as, 4, 4) && a->health) {
+                b->health = 0;
+                a->health = 0;
+                break;
+            }
         }
     }
 }

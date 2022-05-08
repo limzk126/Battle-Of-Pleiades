@@ -94,14 +94,8 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 
 ### Built With
 
-* [Next.js](https://nextjs.org/)
-* [React.js](https://reactjs.org/)
-* [Vue.js](https://vuejs.org/)
-* [Angular](https://angular.io/)
-* [Svelte](https://svelte.dev/)
-* [Laravel](https://laravel.com)
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
+* [C](https://www.cprogramming.com/)
+* [Simple DirectMedia Layer (SDL2)](https://www.libsdl.org/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -155,10 +149,16 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+- [ ] Add explosion animation
+- [ ] Add Enemy spaceships
+- [ ] Increase game difficulty
+- [ ] Add scoreboard
+- [ ] Add Lives
+- [ ] Add Shield animation when player respawns
+- [ ] Add thruster animation
+- [ ] Add animated background (maybe)
+- [ ] Add home screen and menus
+- [ ] Change texture packs to match main theme
 
 See the [open issues](https://github.com/limzk126/Battle-Of-Pleiades/issues) for a full list of proposed features (and known issues).
 
@@ -186,8 +186,6 @@ Don't forget to give the project a star! Thanks again!
 
 <!-- LICENSE -->
 ## License
-
-Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

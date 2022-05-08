@@ -23,6 +23,7 @@ static void drawBullets(void);
 static void fireBullet(void);
 static void do_player_collision();
 static void do_bullet_collision();
+static void split_asteroid(Entity *parent);
 
 extern App app;
 extern Stage stage;

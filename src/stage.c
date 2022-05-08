@@ -219,7 +219,6 @@ static void spawnAsteroids() {
             double theta =  ((double) rand()) / RAND_MAX * 2 * M_PI;
             double x = SCREEN_WIDTH / 2 + r + cos(theta);
             double y = SCREEN_HEIGHT / 2 + r + sin(theta);
-            printf("BEFORE x = %f, y = %f\n", x, y);
             if (y / x * SCREEN_WIDTH <= SCREEN_HEIGHT) {
                 x = SCREEN_WIDTH;
                 y = y / x * SCREEN_WIDTH;
@@ -229,7 +228,6 @@ static void spawnAsteroids() {
             }
             x = SCREEN_WIDTH / 2 + sin(theta) * 900;
             y = SCREEN_WIDTH / 2 - cos(theta) * 900;
-            printf("x = %f, y = %f\n", x, y);
             Entity *asteroid;
             asteroid = malloc(sizeof(Entity));
             memset(asteroid, 0, sizeof(Entity));
@@ -247,7 +245,36 @@ static void spawnAsteroids() {
             asteroid->w = asteroid->rect->w * 2;
             asteroid->h = asteroid->rect->h * 2;
             asteroid->health = 1;
+            asteroid->split_count = 0;
         }
+    }
+}
+
+static void split_asteroid(Entity *parent) {
+    if (parent->split_count >= 2) {
+        printf("true\n");
+        return;
+    }
+
+    for (int i = 0; i < 2; ++i) {
+        Entity *child;
+        child = malloc(sizeof(Entity));
+        memset(child, 0, sizeof(Entity));
+
+        stage.asteroidTail->next = child;
+        stage.asteroidTail = child;
+
+        child->x = parent->x;
+        child->y = parent->y;
+        child->angle = 360 * ((double) rand()) / RAND_MAX;
+        child->dx = 3 * sin(child->angle * UNIT_DEGREE_IN_RADIANS);
+        child->dy = -3 * cos(child->angle * UNIT_DEGREE_IN_RADIANS);
+        child->texture = asteroidsTexture;
+        child->rect = &texture_portion_rect[large_asteroid];
+        child->w = parent->w / 2;
+        child->h = parent->h / 2;
+        child->health = 1;
+        child->split_count = parent->split_count + 1;
     }
 }
 
@@ -396,7 +423,7 @@ static void do_player_collision() {
     pvector player_vertices[3];
     pvector * p = player_vertices;
     generate_vertices(p, *stage.player, 1);
-    printf("%d %d %f\n", player_vertices[0].x, player_vertices[0].y, player->angle);
+
     int next = 0;
     for (int i = 0; i < 3; ++i) {
         next = i + 1;
@@ -437,6 +464,7 @@ static void do_bullet_collision() {
             if (is_poly_to_poly_collision(p, as, 4, 4) && a->health) {
                 b->health = 0;
                 a->health = 0;
+                split_asteroid(a);
                 break;
             }
         }

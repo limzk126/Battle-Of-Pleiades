@@ -29,6 +29,7 @@ typedef struct Entity {
    SDL_Texture *texture;
    SDL_Rect *rect;
    struct Entity *next;
+   int split_count;
 } Entity;
 
 typedef struct {

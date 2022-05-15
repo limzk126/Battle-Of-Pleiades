@@ -6,6 +6,7 @@
 #include <time.h>
 
 static Entity *player;
+static int playerProtectionFrames = 0;
 
 static SDL_Texture *playerTexture;
 static SDL_Texture *asteroidsTexture;
@@ -167,6 +168,11 @@ static void throttleSpeed(float *dx, float *dy) {
 }
 
 static void doPlayer(void) {
+    if (playerProtectionFrames) {
+        --playerProtectionFrames;
+        return;
+    }
+
     if (app.keyboard[SDL_SCANCODE_LEFT]) {
         player->angle -= 4.5;
         if (player->angle < -360) {
@@ -188,6 +194,7 @@ static void doPlayer(void) {
             player->angle -= 360;
         }
     }
+
     if (app.keyboard[SDL_SCANCODE_LCTRL]) {
         if (app.keyboard[SDL_SCANCODE_LCTRL]++ == 1) {
             fireBullet();
@@ -541,8 +548,12 @@ static void do_player_collision() {
             SDL_SetRenderDrawColor(app.renderer, 0, 255, 0, 255);
             SDL_RenderDrawLine(app.renderer, asteroid_vertices[i].x, asteroid_vertices[i].y, asteroid_vertices[next].x, asteroid_vertices[next].y);
         }
-        if (is_poly_to_poly_collision(p, as, 3, 4)) {
+        if (is_poly_to_poly_collision(p, as, 3, 4) && playerProtectionFrames == 0) {
             add_explosions(player->x, player->y, 300);
+            playerProtectionFrames = 180;
+            player->dx = 0;
+            player->dy = 0;
+            player->angle = 0.0;
             player->x = SCREEN_WIDTH / 2;
             player->y = SCREEN_HEIGHT / 2;
             play_sound(SND_PLAYER_DIE, CH_PLAYER);

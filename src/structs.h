@@ -32,15 +32,26 @@ typedef struct Entity {
    int split_count;
 } Entity;
 
+struct Explosion {
+    float x;
+    float y;
+    float dx;
+    float dy;
+    int r, g, b, a;
+    struct Explosion *next;
+};
+
 typedef struct {
     Entity *player;
     Entity asteroidHead, *asteroidTail;
     Entity bulletHead, *bulletTail;
+    struct Explosion explosionHead, *explosionTail;
 } Stage;
 
 typedef struct {
     int x;
     int y;
 } pvector;
+
 
 #endif //BATTLE_OF_PLEIADES_STRUCTS_H

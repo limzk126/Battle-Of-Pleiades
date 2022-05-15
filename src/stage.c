@@ -11,6 +11,8 @@ static SDL_Texture *playerTexture;
 static SDL_Texture *asteroidsTexture;
 static SDL_Texture *bulletTexture;
 static SDL_Texture *backgroundTexture;
+static SDL_Texture *explosionTexture;
+
 static SDL_Rect texture_portion_rect[64];
 
 enum texturePortion {
@@ -96,11 +98,13 @@ void initStage(void) {
     memset(&stage, 0, sizeof(Stage));
     stage.asteroidTail = &stage.asteroidHead;
     stage.bulletTail = &stage.bulletHead;
+    stage.explosionTail = &stage.explosionHead;
 
     playerTexture = loadTexture("gfx/Pixel_Spaceships/Sprites/blue_03.png");
     asteroidsTexture = loadTexture("gfx/asteroids-arcade.png");
     bulletTexture = loadTexture("gfx/Pixel_Spaceships/Sprites/Projectiles/projectile02-1-cropped.png");
     backgroundTexture = loadTexture("gfx/background.jpg");
+    explosionTexture = loadTexture("gfx/explosion.png");
 
     initRects();
     initPlayer();
@@ -118,6 +122,7 @@ static void logic(void) {
     doBullets();
     do_player_collision();
     do_bullet_collision();
+    do_explosions();
 }
 
 static void draw(void) {
@@ -125,6 +130,7 @@ static void draw(void) {
     drawPlayer();
     drawAsteroids();
     drawBullets();
+    draw_explosions();
 }
 
 static void initPlayer(void) {
@@ -321,6 +327,89 @@ static void doAsteroids(void) {
     }
 }
 
+static void do_explosions(void) {
+    struct Explosion *e;
+    struct Explosion *prev = &stage.explosionHead;
+
+    for (e = stage.explosionHead.next; e != NULL; e = e->next) {
+        e->x += e->dx;
+        e->y += e->dy;
+
+        if (--e->a <= 0) {
+            if (e == stage.explosionTail) {
+                stage.explosionTail = prev;
+            }
+
+            prev->next = e->next;
+            free(e);
+            e = prev;
+        }
+
+        prev = e;
+    }
+}
+
+static void draw_explosions(void) {
+   struct Explosion *e;
+
+    SDL_SetRenderDrawBlendMode(app.renderer, SDL_BLENDMODE_ADD);
+    SDL_SetTextureBlendMode(explosionTexture, SDL_BLENDMODE_ADD);
+
+    for (e = stage.explosionHead.next ; e != NULL ; e = e->next)
+    {
+        SDL_SetTextureColorMod(explosionTexture, e->r, e->g, e->b);
+        SDL_SetTextureAlphaMod(explosionTexture, e->a);
+
+        blit(explosionTexture, e->x, e->y, 0);
+    }
+
+    SDL_SetRenderDrawBlendMode(app.renderer, SDL_BLENDMODE_NONE);
+}
+
+static void add_explosions(int x, int y, int num) {
+    struct Explosion *e;
+
+    for (int i = 0; i < num; i++) {
+        e = malloc(sizeof(struct Explosion));
+        memset(e, 0, sizeof(struct Explosion));
+        stage.explosionTail->next = e;
+        stage.explosionTail = e;
+
+        e->x = x + (rand() % 32) - (rand() % 32);
+        e->y = y + (rand() % 32) - (rand() % 32);
+        e->dx = (rand() % 10) - (rand() % 10);
+        e->dy = (rand() % 10) - (rand() % 10);
+
+        e->dx /= 10;
+        e->dy /= 10;
+
+        switch (rand() % 4)
+        {
+            case 0:
+                e->r = 255;
+                break;
+
+            case 1:
+                e->r = 255;
+                e->g = 128;
+                break;
+
+            case 2:
+                e->r = 255;
+                e->g = 255;
+                break;
+
+            default:
+                e->r = 255;
+                e->g = 255;
+                e->b = 255;
+                break;
+        }
+
+        e->a = rand() % FPS * 3;
+    }
+}
+
 static void fireBullet(void) {
     Entity *bullet;
     bullet = malloc(sizeof(Entity));
@@ -453,6 +542,7 @@ static void do_player_collision() {
             SDL_RenderDrawLine(app.renderer, asteroid_vertices[i].x, asteroid_vertices[i].y, asteroid_vertices[next].x, asteroid_vertices[next].y);
         }
         if (is_poly_to_poly_collision(p, as, 3, 4)) {
+            add_explosions(player->x, player->y, 300);
             player->x = SCREEN_WIDTH / 2;
             player->y = SCREEN_HEIGHT / 2;
             play_sound(SND_PLAYER_DIE, CH_PLAYER);

@@ -25,6 +25,9 @@ static void do_player_collision();
 static void do_bullet_collision();
 static void split_asteroid(Entity *parent);
 static void drawBackground();
+static void do_explosions(void);
+static void add_explosions(int x, int y, int num);
+static void draw_explosions(void);
 
 extern App app;
 extern Stage stage;

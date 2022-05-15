@@ -24,6 +24,8 @@
 
 #define MAX_SND_CHANNELS 8
 
+#define FPS 60
+
 enum {
     CH_ANY = -1,
     CH_PLAYER,

@@ -13,6 +13,7 @@ static SDL_Texture *asteroidsTexture;
 static SDL_Texture *bulletTexture;
 static SDL_Texture *backgroundTexture;
 static SDL_Texture *explosionTexture;
+static SDL_Texture *shieldTexture;
 
 static SDL_Rect texture_portion_rect[64];
 
@@ -106,6 +107,7 @@ void initStage(void) {
     bulletTexture = loadTexture("gfx/Pixel_Spaceships/Sprites/Projectiles/projectile02-1-cropped.png");
     backgroundTexture = loadTexture("gfx/background.jpg");
     explosionTexture = loadTexture("gfx/explosion.png");
+    shieldTexture = loadTexture("gfx/spr_shield.png");
 
     initRects();
     initPlayer();
@@ -132,6 +134,7 @@ static void draw(void) {
     drawAsteroids();
     drawBullets();
     draw_explosions();
+    draw_shield();
 }
 
 static void initPlayer(void) {
@@ -234,6 +237,19 @@ static void drawPlayer(void) {
     wrapCoordinates(stage.player);
     blitRect(stage.player->texture, *stage.player->rect,stage.player->x,
             stage.player->y, stage.player->w,stage.player->h, stage.player->angle);
+}
+
+static void draw_shield(void) {
+    if (!playerProtectionFrames) {
+        return;
+    }
+
+    SDL_Rect *rect = malloc(sizeof(SDL_Rect));
+    rect->x = 0;
+    rect->y = 0;
+    SDL_QueryTexture(shieldTexture, NULL, NULL, &rect->w, &rect->h);
+    blitRect(shieldTexture, *rect, SCREEN_WIDTH / 2,
+             SCREEN_HEIGHT / 2, player->w * 2, player->h * 2, 0);
 }
 
 static void spawnAsteroids() {

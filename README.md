@@ -149,12 +149,12 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Add explosion animation
+- [X] Add explosion animation
 - [ ] Add Enemy spaceships
 - [ ] Increase game difficulty
 - [ ] Add scoreboard
 - [ ] Add Lives
-- [ ] Add Shield animation when player respawns
+- [X] Add Shield animation when player respawns
 - [ ] Add thruster animation
 - [ ] Add animated background (maybe)
 - [ ] Add home screen and menus

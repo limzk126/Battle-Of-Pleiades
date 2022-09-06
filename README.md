@@ -32,13 +32,12 @@
 <br />
 <div align="center">
   <a href="https://github.com/limzk126/Battle-Of-Pleiades">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Battle Of Pleiades</h3>
 
   <p align="center">
-    project_description
+    As a Lyrian, you accidentally entered the forbidden territory of the Pleiades. You have to fight against the unlimited incoming asteroids and Plaiedes fighters to return to your home world!
     <br />
     <a href="https://github.com/limzk126/Battle-Of-Pleiades"><strong>Explore the docs »</strong></a>
     <br />
@@ -83,10 +82,10 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
+Here is a Demo of the project prototype:
 
 https://user-images.githubusercontent.com/88614036/167307058-2c8a78b1-79e5-459e-91d7-b2f6317a2e22.mp4
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -103,33 +102,13 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 
 <!-- GETTING STARTED -->
 ## Getting Started
-
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+Will be updated soon!
 
 ### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+A linux or Windows operating system. MacOS will be supported soon.
 
 ### Installation
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/limzk126/Battle-Of-Pleiades.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
+Will be updated soon!
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -137,10 +116,7 @@ This is an example of how to list things you need to use the software and how to
 
 <!-- USAGE EXAMPLES -->
 ## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+Will be updated soon!
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -194,7 +170,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+Dylan Lim - dylanlim12698@gmail.com
 
 Project Link: [https://github.com/limzk126/Battle-Of-Pleiades](https://github.com/limzk126/Battle-Of-Pleiades)
 
@@ -204,10 +180,6 @@ Project Link: [https://github.com/limzk126/Battle-Of-Pleiades](https://github.co
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
-
-* []()
-* []()
-* []()
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
